@@ -1,0 +1,3 @@
+runs:
+  using: 'node18'
+  main: 'dist/index.js'
