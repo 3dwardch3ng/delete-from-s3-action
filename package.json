@@ -33,10 +33,6 @@
       {
         "name": "next",
         "prerelease": true
-      },
-      {
-        "name": "develop",
-        "prerelease": true
       }
     ],
     "tagFormat": "v${version}",
