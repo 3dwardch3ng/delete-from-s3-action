@@ -40331,6 +40331,167 @@ exports["default"] = _default;
 
 /***/ }),
 
+    /***/ 6144:
+    /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+      'use strict';
+
+      var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+        if (k2 === undefined) k2 = k;
+        var desc = Object.getOwnPropertyDescriptor(m, k);
+        if (!desc || ('get' in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+          desc = {
+            enumerable: true, get: function() {
+              return m[k];
+            }
+          };
+        }
+        Object.defineProperty(o, k2, desc);
+      }) : (function(o, m, k, k2) {
+        if (k2 === undefined) k2 = k;
+        o[k2] = m[k];
+      }));
+      var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+        Object.defineProperty(o, 'default', { enumerable: true, value: v });
+      }) : function(o, v) {
+        o['default'] = v;
+      });
+      var __importStar = (this && this.__importStar) || function(mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k in mod) if (k !== 'default' && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+        __setModuleDefault(result, mod);
+        return result;
+      };
+      Object.defineProperty(exports, '__esModule', ({ value: true }));
+      const core = __importStar(__nccwpck_require__(42186));
+      const client_s3_1 = __nccwpck_require__(19250);
+      const INPUT_AWS_ACCESS_KEY_ID = core.getInput('aws_access_key_id', {
+        required: false
+      });
+      const INPUT_AWS_SECRET_ACCESS_KEY = core.getInput('aws_secret_access_key', {
+        required: false
+      });
+      const BUCKET = core.getInput('aws_bucket_name', {
+        required: true
+      });
+      const BUCKET_REGION = core.getInput('aws_bucket_region', {
+        required: true
+      });
+      const IS_FULL_MATCH = core.getInput('is_full_match', {
+        required: false
+      }) || 'true';
+      const IS_ANY_MATCH = core.getInput('is_any_match', {
+        required: false
+      }) || 'false';
+      const IS_PREFIX_MATCH = core.getInput('is_prefix_match', {
+        required: false
+      }) || 'false';
+      const IS_SUFFIX_MATCH = core.getInput('is_suffix_match', {
+        required: false
+      }) || 'false';
+      const OBJECT_NAME_TO_DELETE = core.getInput('object_name_to_delete', {
+        required: true
+      });
+      const DRY_RUN = core.getInput('dry-run', {
+        required: false
+      }) || 'false';
+      let s3Options;
+      let s3Client;
+      const init = function init() {
+        if (INPUT_AWS_ACCESS_KEY_ID !== '' && INPUT_AWS_SECRET_ACCESS_KEY !== '') {
+          core.debug('Using AWS credentials from input');
+          s3Options = [{
+            region: BUCKET_REGION,
+            endpoint: `https://${BUCKET}.s3.${BUCKET_REGION}.amazonaws.com`,
+            credentials: {
+              accessKeyId: INPUT_AWS_ACCESS_KEY_ID,
+              secretAccessKey: INPUT_AWS_SECRET_ACCESS_KEY
+            }
+          }];
+          s3Client = new client_s3_1.S3Client(s3Options);
+        } else {
+          core.debug('Using AWS credentials from environment');
+        }
+      };
+      const deletedCommandInput = {
+        Bucket: BUCKET,
+        Delete: { Objects: [] }
+      };
+      const deleteCommand = new client_s3_1.DeleteObjectsCommand(deletedCommandInput);
+      const listObjects = async function listObjects(callback1, callback2) {
+        const listRequest = {
+          Bucket: BUCKET
+        };
+        if (IS_PREFIX_MATCH === 'true') {
+          listRequest.Prefix = OBJECT_NAME_TO_DELETE;
+        }
+        const listCommand = new client_s3_1.ListObjectsV2Command(listRequest);
+        const response = await s3Client.send(listCommand);
+        if (!response.Contents || response.Contents?.length === 0)
+          return;
+        if (callback1) {
+          callback1(response.Contents, callback2);
+        }
+        if (response.IsTruncated) {
+          await listObjects(callback1, callback2);
+        }
+      };
+      const processObjectsFunc = async function processObjects(objects, callback) {
+        for (const object of objects) {
+          if (objectKeyMatches(object.Key)) {
+            callback(object.Key);
+          }
+        }
+      };
+      const objectKeyMatches = function objectKeyMatches(objectKey) {
+        if (!objectKey)
+          return false;
+        if (IS_FULL_MATCH === 'true') {
+          return objectKey === OBJECT_NAME_TO_DELETE;
+        } else if (IS_ANY_MATCH === 'true') {
+          return objectKey.includes(OBJECT_NAME_TO_DELETE);
+        } else if (IS_PREFIX_MATCH === 'true') {
+          return objectKey.startsWith(OBJECT_NAME_TO_DELETE);
+        } else if (IS_SUFFIX_MATCH === 'true') {
+          return objectKey.endsWith(OBJECT_NAME_TO_DELETE);
+        }
+        return false;
+      };
+      const processObjectToDelete = function processObjectToDelete(objectKey) {
+        if (DRY_RUN === 'true') {
+          core.info(`Would delete object: ${objectKey}`);
+        } else {
+          deletedCommandInput.Delete?.Objects?.push({ Key: objectKey });
+        }
+      };
+
+      function deleteObjects() {
+        listObjects(processObjectsFunc, processObjectToDelete).then(() => {
+          if (deletedCommandInput.Delete?.Objects?.length === 0) {
+            core.info('No objects to delete');
+            return;
+          }
+          s3Client.send(deleteCommand).then(({ Deleted }) => {
+            if (!Deleted)
+              return;
+            core.info(`Successfully deleted ${Deleted?.length} objects from S3 bucket. Deleted objects:`);
+            core.info(Deleted?.map((d) => ` • ${d.Key}`).join('\n'));
+          });
+        });
+      }
+
+      try {
+        init();
+        deleteObjects();
+      } catch (error) {
+        core.setFailed(`Action failed with error ${error}`);
+      }
+
+
+      /***/
+    }),
+
 /***/ 20481:
 /***/ ((module) => {
 
@@ -40553,153 +40714,14 @@ module.exports = JSON.parse('{"partitions":[{"id":"aws","outputs":{"dnsSuffix":"
 /******/ 	if (typeof __nccwpck_require__ !== 'undefined') __nccwpck_require__.ab = __dirname + "/";
 /******/ 	
 /************************************************************************/
-var __webpack_exports__ = {};
-// This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
-(() => {
-const core = __nccwpck_require__(42186);
-const {
-  S3Client,
-  ListObjectsV2Command,
-  DeleteObjectsCommand
-} = __nccwpck_require__(19250);
-
-const INPUT_AWS_ACCESS_KEY_ID = core.getInput('aws_access_key_id', {
-  required: false
-});
-const INPUT_AWS_SECRET_ACCESS_KEY = core.getInput('aws_secret_access_key', {
-  required: false
-});
-const BUCKET = core.getInput('aws_bucket_name', {
-  required: true
-});
-const BATCH_SIZE = core.getInput('aws_bucket_object_search_batch_size', {
-  required: false
-});
-const IS_FULL_MATCH = core.getInput('is_full_match', {
-  required: false
-});
-const IS_ANY_MATCH = core.getInput('is_any_match', {
-  required: false
-});
-const IS_PREFIX_MATCH = core.getInput('is_prefix_match', {
-  required: false
-});
-const IS_SUFFIX_MATCH = core.getInput('is_suffix_match', {
-  required: false
-});
-const OBJECT_NAME_TO_DELETE = core.getInput('object_name_to_delete', {
-  required: true
-});
-const DRY_RUN = core.getInput('dry-run', {
-  required: false
-});
-
-let s3Options = {};
-if (INPUT_AWS_ACCESS_KEY_ID !== '' && INPUT_AWS_SECRET_ACCESS_KEY !== '') {
-  core.debug('Using AWS credentials from input');
-  s3Options['accessKeyId'] = INPUT_AWS_ACCESS_KEY_ID;
-  s3Options['secretAccessKey'] = INPUT_AWS_SECRET_ACCESS_KEY;
-} else {
-  core.debug('Using AWS credentials from environment');
-}
-
-const s3Client = new S3Client(s3Options);
-
-const listCommand = new ListObjectsV2Command({
-  Bucket: BUCKET
-});
-
-const deleteCommand = new DeleteObjectsCommand({
-  Bucket: BUCKET,
-  Delete: { Objects: [] }
-});
-
-const listObjects = async function listObjects(callback1, callback2) {
-  if (BATCH_SIZE !== '') {
-    listCommand.MaxKeys = BATCH_SIZE;
-  }
-
-  if (IS_PREFIX_MATCH === 'true') {
-    listCommand.Prefix = OBJECT_NAME_TO_DELETE;
-  }
-
-  const response = await s3Client.send(listCommand);
-
-  if (response.Contents.length === 0) return;
-
-  if (callback1) {
-    callback1(response.Contents, callback2);
-  }
-
-  if (response.IsTruncated) {
-    await listObjects(callback1, callback2);
-  }
-}
-
-const processObjectsFunc = async function processObjects(objects, callback) {
-  for (const object of objects) {
-    if (IS_FULL_MATCH === 'true') {
-      if (object.Key === OBJECT_NAME_TO_DELETE) {
-        callback(object.Key);
-      }
-    } else if (IS_ANY_MATCH === 'true') {
-      if (object.Key.includes(OBJECT_NAME_TO_DELETE)) {
-        callback(object.Key);
-      }
-    } else if (IS_PREFIX_MATCH === 'true') {
-      if (object.Key.startsWith(OBJECT_NAME_TO_DELETE)) {
-        callback(object.Key);
-      }
-    } else if (IS_SUFFIX_MATCH === 'true') {
-      if (object.Key.endsWith(OBJECT_NAME_TO_DELETE)) {
-        callback(object.Key);
-      }
-    }
-  }
-}
-
-const processObjectToDelete = function processObjectToDelete(objectKey) {
-  if (DRY_RUN === 'true') {
-    core.info(`Would delete object: ${objectKey}`);
-  } else {
-    deleteCommand.Delete.Objects.push({ Key: objectKey });
-  }
-}
-
-function deleteObjects() {
-  listObjects(processObjectsFunc, processObjectToDelete).then((success, err) => {
-    if (err) {
-      core.error(err);
-      throw err;
-    }
-
-    if (deleteCommand.Delete.Objects.length === 0) {
-      core.info('No objects to delete');
-      return;
-    }
-
-    s3Client.send(deleteCommand).then(({ Deleted }, success, err) => {
-      if (err) {
-        core.error(err);
-        throw err;
-      }
-
-      core.info(
-        `Successfully deleted ${Deleted.length} objects from S3 bucket. Deleted objects:`
-      );
-
-      core.info(Deleted.map((d) => ` • ${d.Key}`).join("\n"));
-    });
-  });
-}
-
-try {
-  deleteObjects();
-} catch (error) {
-  core.setFailed(`Action failed with error ${error}`);
-}
-})();
-
-module.exports = __webpack_exports__;
-/******/ })()
+  /******/
+  /******/ 	// startup
+  /******/ 	// Load entry module and return exports
+  /******/ 	// This entry module is referenced by other modules so it can't be inlined
+  /******/
+  var __webpack_exports__ = __nccwpck_require__(6144);
+  /******/
+  module.exports = __webpack_exports__;
+  /******/
+  /******/ })()
 ;
