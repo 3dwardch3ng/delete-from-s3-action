@@ -80,23 +80,21 @@ const listObjects = async function listObjects(callback1, callback2) {
 
 const processObjectsFunc = async function processObjects(objects, callback) {
   for (const object of objects) {
-    if (IS_FULL_MATCH === 'true') {
-      if (object.Key === OBJECT_NAME_TO_DELETE) {
-        callback(object.Key);
-      }
-    } else if (IS_ANY_MATCH === 'true') {
-      if (object.Key.includes(OBJECT_NAME_TO_DELETE)) {
-        callback(object.Key);
-      }
-    } else if (IS_PREFIX_MATCH === 'true') {
-      if (object.Key.startsWith(OBJECT_NAME_TO_DELETE)) {
-        callback(object.Key);
-      }
-    } else if (IS_SUFFIX_MATCH === 'true') {
-      if (object.Key.endsWith(OBJECT_NAME_TO_DELETE)) {
-        callback(object.Key);
-      }
+    if (objectKeyMatches(object.Key)) {
+      callback(object.Key);
     }
+  }
+}
+
+const objectKeyMatches = function objectKeyMatches(objectKey) {
+  if (IS_FULL_MATCH === 'true') {
+    return objectKey === OBJECT_NAME_TO_DELETE;
+  } else if (IS_ANY_MATCH === 'true') {
+    return objectKey.includes(OBJECT_NAME_TO_DELETE);
+  } else if (IS_PREFIX_MATCH === 'true') {
+    return objectKey.startsWith(OBJECT_NAME_TO_DELETE);
+  } else if (IS_SUFFIX_MATCH === 'true') {
+    return objectKey.endsWith(OBJECT_NAME_TO_DELETE);
   }
 }
 

@@ -1,7 +1,8 @@
 name: Upload to S3 Action pipeline
 
 on:
-  push:
+  pull_request:
+    types: [ opened, synchronize, reopened ]
     branches:
       - next
 permissions:
