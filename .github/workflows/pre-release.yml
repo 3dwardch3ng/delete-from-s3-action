@@ -10,10 +10,36 @@ permissions:
   contents: write
 
 jobs:
-  code-analysis:
+  test-typescript:
+    name: TypeScript Tests
+    runs-on: ubuntu-latest
     environment: pre-release
+    steps:
+      - name: Checkout
+        id: checkout
+        uses: actions/checkout@v3
+      - name: Setup Node.js
+        id: setup-node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+          cache: yarn
+      - name: Install Dependencies
+        id: yarn-ci
+        run: yarn
+      - name: Check Format
+        id: yarn-format-check
+        run: yarn format:check
+      - name: Lint
+        id: yarn-lint
+        run: yarn lint
+      - name: Test
+        id: yarn-ci-test
+        run: yarn ci-test
+  code-analysis:
     name: SonarCloud Code Analysis
     runs-on: ubuntu-latest
+    environment: pre-release
     steps:
       - uses: actions/setup-node@v3
         with:
@@ -33,7 +59,7 @@ jobs:
     name: generate-version
     runs-on: ubuntu-latest
     environment: pre-release
-    needs: code-analysis
+    needs: [ code-analysis, test-typescript ]
     steps:
       - name: Get branch name
         id: branch-name
