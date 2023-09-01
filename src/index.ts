@@ -29,7 +29,7 @@ export const prepareInputValues = (): void => {
     core.getInput('is_prefix_match', { required: false }) || 'false';
   inputData.IS_SUFFIX_MATCH =
     core.getInput('is_suffix_match', { required: false }) || 'false';
-  inputData.OBJECT_NAME_TO_DELETE = core.getInput('object_name_to_delete', {
+  inputData.OBJECT_KEY_TO_DELETE = core.getInput('object_key_to_delete', {
     required: true,
   });
   inputData.DRY_RUN = core.getInput('dry_run', { required: false }) || 'false';
@@ -80,7 +80,7 @@ export const listObjects = async (
   };
 
   if (inputData.IS_PREFIX_MATCH === 'true') {
-    listRequest.Prefix = inputData.OBJECT_NAME_TO_DELETE;
+    listRequest.Prefix = inputData.OBJECT_KEY_TO_DELETE;
   }
 
   const listCommand: S3.ListObjectsV2Command = new S3.ListObjectsV2Command(
@@ -116,13 +116,13 @@ export const objectKeyMatches = (objectKey: string | undefined): boolean => {
   if (!objectKey) return false;
 
   if (inputData.IS_FULL_MATCH === 'true') {
-    return objectKey === inputData.OBJECT_NAME_TO_DELETE;
+    return objectKey === inputData.OBJECT_KEY_TO_DELETE;
   } else if (inputData.IS_ANY_MATCH === 'true') {
-    return objectKey.includes(inputData.OBJECT_NAME_TO_DELETE);
+    return objectKey.includes(inputData.OBJECT_KEY_TO_DELETE);
   } else if (inputData.IS_PREFIX_MATCH === 'true') {
-    return objectKey.startsWith(inputData.OBJECT_NAME_TO_DELETE);
+    return objectKey.startsWith(inputData.OBJECT_KEY_TO_DELETE);
   } else if (inputData.IS_SUFFIX_MATCH === 'true') {
-    return objectKey.endsWith(inputData.OBJECT_NAME_TO_DELETE);
+    return objectKey.endsWith(inputData.OBJECT_KEY_TO_DELETE);
   }
   return false;
 };
@@ -182,7 +182,7 @@ type InputData = {
   IS_ANY_MATCH: string;
   IS_PREFIX_MATCH: string;
   IS_SUFFIX_MATCH: string;
-  OBJECT_NAME_TO_DELETE: string;
+  OBJECT_KEY_TO_DELETE: string;
   DRY_RUN: string;
 };
 
