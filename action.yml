@@ -1,3 +1,20 @@
+name: 'Delete from S3 Action'
+description: 'Delete objects from S3 bucket'
+author: '3dwardCh3nG'
+inputs:
+  aws_access_key_id:
+    description: ''
+    required: false
+  aws_secret_access_key:
+    description: ''
+    required: false
+  aws_bucket_name:
+    description: 'aws bucket name'
+    required: true
+
+outputs:
+  deleted_objects:
+    description: 'The deleted objects'
 runs:
-  using: 'node18'
+  using: 'node16'
   main: 'dist/index.js'
