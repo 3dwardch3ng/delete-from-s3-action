@@ -3,7 +3,7 @@ name: Lint Code Base
 on:
   pull_request:
     branches:
-      - main
+      - develop
   push:
     branches-ignore:
       - main
@@ -33,7 +33,8 @@ jobs:
         id: super-linter
         uses: super-linter/super-linter/slim@v5
         env:
-          DEFAULT_BRANCH: main
+          DEFAULT_BRANCH: develop
           GITHUB_TOKEN: ${{ secrets.PIPELINE_GITHUB_TOKEN }}
           TYPESCRIPT_DEFAULT_STYLE: prettier
           VALIDATE_JSCPD: false
+          FILTER_REGEX_INCLUDE: '^(src|test)/.*'
