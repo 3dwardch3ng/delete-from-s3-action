@@ -7,8 +7,8 @@ on:
       - develop
       - next
   push:
-    branches-ignore:
-      - main
+    branches:
+      - next
 
 jobs:
   qodana:
