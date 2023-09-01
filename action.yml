@@ -1,5 +1,6 @@
 name: 'Delete from S3 Action'
 description: 'Delete objects from S3 bucket'
+author: '3dwardCh3nG'
 inputs:
   aws_access_key_id:
     description: ''
@@ -12,8 +13,8 @@ inputs:
     required: true
 
 outputs:
-  time: # id of output
-    description: 'The time we greeted you'
+  deleted_objects:
+    description: 'The deleted objects'
 runs:
   using: 'node16'
   main: 'dist/index.js'
