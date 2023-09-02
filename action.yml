@@ -1,0 +1,49 @@
+name: 'Delete from S3 Action'
+description: 'Delete objects from S3 bucket'
+author: '3dwardCh3nG'
+branding:
+  icon: 'delete'
+  color: 'white'
+inputs:
+  aws_access_key_id:
+    description: ''
+    required: false
+  aws_secret_access_key:
+    description: ''
+    required: false
+  aws_bucket_name:
+    description: 'aws bucket name'
+    required: true
+  aws_bucket_region:
+    description: 'aws bucket region'
+    required: true
+  is_full_match:
+    description: 'is full match'
+    required: false
+    default: 'true'
+  is_any_match:
+    description: 'is any match'
+    required: false
+    default: 'false'
+  is_prefix_match:
+    description: 'is prefix match'
+    required: false
+    default: 'false'
+  is_suffix_match:
+    description: 'is suffix match'
+    required: false
+    default: 'false'
+  object_key_to_delete:
+    description: 'object key to delete'
+    required: true
+  dry_run:
+    description: 'dry run'
+    required: false
+    default: 'false'
+
+outputs:
+  deleted_objects:
+    description: 'The deleted objects'
+runs:
+  using: 'node16'
+  main: 'dist/index.js'

@@ -1,0 +1,128 @@
+name: Continuous Integration
+
+on:
+  push:
+  pull_request:
+    types: [ opened, synchronize, reopened ]
+permissions:
+  id-token: write
+  contents: write
+
+jobs:
+  test-typescript:
+    name: TypeScript Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        id: checkout
+        uses: actions/checkout@v3
+      - name: Setup Node.js
+        id: setup-node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+          cache: yarn
+      - name: Install Dependencies
+        id: yarn-ci
+        run: yarn
+      - name: Check Format
+        id: yarn-format-check
+        run: yarn format:check
+      - name: Lint
+        id: yarn-lint
+        run: yarn lint
+      - name: Test
+        id: yarn-ci-test
+        run: yarn ci-test
+      - name: Analyze with SonarCloud
+        uses: sonarsource/sonarcloud-github-action@v2.0.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.PIPELINE_GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+  test-action:
+    name: GitHub Actions Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        id: checkout
+        uses: actions/checkout@v3
+      - name: Test Local Action
+        id: test-action-1
+        uses: ./
+        with:
+          aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws_bucket_name: 'test-delete-from-s3-action'
+          aws_bucket_region: ap-southeast-2
+          object_key_to_delete: 'object/path/1.txt'
+          dry_run: true
+      - name: Test Local Action
+        id: test-action-2
+        uses: ./
+        with:
+          aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws_bucket_name: 'test-delete-from-s3-action'
+          aws_bucket_region: ap-southeast-2
+          object_key_to_delete: 'object/path/'
+          is_full_match: false
+          is_prefix_match: true
+          dry_run: true
+      - name: Test Local Action
+        id: test-action-3
+        uses: ./
+        with:
+          aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws_bucket_name: 'test-delete-from-s3-action'
+          aws_bucket_region: ap-southeast-2
+          object_key_to_delete: '2.txt'
+          is_full_match: false
+          is_suffix_match: true
+          dry_run: true
+      - name: Test Local Action
+        id: test-action-4
+        uses: ./
+        with:
+          aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws_bucket_name: 'test-delete-from-s3-action'
+          aws_bucket_region: ap-southeast-2
+          object_key_to_delete: '10.txt'
+          is_full_match: false
+          is_suffix_match: true
+  release:
+    name: generate-version
+    runs-on: ubuntu-latest
+    needs: [ test-typescript, test-action ]
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+      id-token: write
+    if: |
+      github.ref == 'refs/heads/main' ||
+      github.ref == 'refs/heads/next' ||
+      github.ref == 'refs/heads/develop'
+    steps:
+      - name: Get branch name
+        id: branch-name
+        uses: tj-actions/branch-names@v7.0.5
+      - name: checkout
+        uses: actions/checkout@v3.6.0
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "lts/*"
+      - name: Set up environment
+        env:
+          GH_TOKEN: ${{secrets.PIPELINE_GITHUB_TOKEN}}
+        run: |
+          yarn install
+      - name: Generate App Version
+        env:
+          GH_TOKEN: ${{secrets.PIPELINE_GITHUB_TOKEN}}
+        shell: bash
+        run: bash ./scripts/generate-version.sh ${{ steps.branch-name.outputs.current_branch }}
