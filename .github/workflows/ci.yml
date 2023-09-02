@@ -81,7 +81,7 @@ jobs:
           is_suffix_match: true
           dry_run: true
       - name: Test Local Action
-        id: test-action-3
+        id: test-action-4
         uses: ./
         with:
           aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
