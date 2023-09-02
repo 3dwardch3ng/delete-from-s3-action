@@ -171,6 +171,7 @@ export const run = async (): Promise<void> => {
   }
 };
 
+// eslint-disable-next-line github/no-then
 run().then(() => core.info('Action finished successfully'));
 
 type InputData = {
