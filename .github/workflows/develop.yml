@@ -39,22 +39,8 @@ jobs:
     - name: Test
       id: yarn-ci-test
       run: yarn ci-test
-  code-analysis:
-    name: SonarCloud Code Analysis
-    runs-on: ubuntu-latest
-    environment: develop
-    steps:
-      - uses: actions/setup-node@v3
-        with:
-          node-version: '20'
-      - uses: actions/checkout@v3.6.0
-        with:
-          # Disabling shallow clone is recommended for improving relevancy of reporting
-          fetch-depth: 0
-      - name: Analyze with SonarCloud
-        uses: sonarsource/sonarcloud-github-action@v2.0.0
-        with:
-          projectBaseDir: .
-        env:
-          GITHUB_TOKEN: ${{ secrets.PIPELINE_GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    - name: Analyze with SonarCloud
+      uses: sonarsource/sonarcloud-github-action@v2.0.0
+      env:
+        GITHUB_TOKEN: ${{ secrets.PIPELINE_GITHUB_TOKEN }}
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
