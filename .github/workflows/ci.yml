@@ -95,6 +95,11 @@ jobs:
     name: generate-version
     runs-on: ubuntu-latest
     needs: [ test-typescript, test-action ]
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+      id-token: write
     if: |
       github.ref == 'refs/heads/main' ||
       github.ref == 'refs/heads/next' ||
@@ -105,9 +110,12 @@ jobs:
         uses: tj-actions/branch-names@v7.0.5
       - name: checkout
         uses: actions/checkout@v3.6.0
+        with:
+          fetch-depth: 0
+          persist-credentials: false
       - uses: actions/setup-node@v3
         with:
-          node-version: 20
+          node-version: "lts/*"
       - name: Set up environment
         env:
           GH_TOKEN: ${{secrets.PIPELINE_GITHUB_TOKEN}}
