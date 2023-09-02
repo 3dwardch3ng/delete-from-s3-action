@@ -42,6 +42,8 @@ export const init = (): void => {
     inputData.INPUT_AWS_SECRET_ACCESS_KEY !== ''
   ) {
     core.debug('Using AWS credentials from input');
+    process.env.AWS_ACCESS_KEY_ID = inputData.INPUT_AWS_ACCESS_KEY_ID;
+    process.env.AWS_SECRET_ACCESS_KEY = inputData.INPUT_AWS_SECRET_ACCESS_KEY;
     s3Data.s3Options = [
       {
         region: inputData.BUCKET_REGION,
