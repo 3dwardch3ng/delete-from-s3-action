@@ -14,6 +14,7 @@ This is the Github Action that delete object/s from a S3 bucket
 ![CI](https://github.com/3dwardCh3nG/delete-from-s3-action/actions/workflows/develop.yml/badge.svg?branch=develop)
 [![Qodana](https://github.com/3dwardCh3nG/delete-from-s3-action/actions/workflows/qodana_code_quality.yml/badge.svg?branch=develop)](https://github.com/3dwardCh3nG/delete-from-s3-action/actions/workflows/qodana_code_quality.yml)
 [![GitHub Super-Linter](https://github.com/3dwardCh3nG/delete-from-s3-action/actions/workflows/linter.yml/badge.svg?branch=develop)](https://github.com/super-linter/super-linter)
+[![Dependency Review](https://github.com/3dwardCh3nG/delete-from-s3-action/actions/workflows/dependency-review.yml/badge.svg)](https://github.com/3dwardCh3nG/delete-from-s3-action/actions/workflows/dependency-review.yml)
 ![Unit Test](badges/coverage.svg)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=3dwardCh3nG_delete-from-s3-action&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=3dwardCh3nG_delete-from-s3-action)
 [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=3dwardCh3nG_delete-from-s3-action&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=3dwardCh3nG_delete-from-s3-action)
