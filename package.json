@@ -86,8 +86,8 @@
     "typescript": "^5.2.2",
     "@smithy/types": "^2.2.2",
     "@smithy/smithy-client": "^2.0.5",
-    "semantic-release": "21.1.0",
-    "conventional-changelog-eslint": "5.0.0"
+    "semantic-release": "19.0.3",
+    "conventional-changelog-eslint": "3.0.9"
   },
   "prettier": {
     "singleQuote": true
