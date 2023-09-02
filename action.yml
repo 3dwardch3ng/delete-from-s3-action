@@ -1,6 +1,9 @@
 name: 'Delete from S3 Action'
 description: 'Delete objects from S3 bucket'
 author: '3dwardCh3nG'
+branding:
+  icon: 'delete'
+  color: 'white'
 inputs:
   aws_access_key_id:
     description: ''

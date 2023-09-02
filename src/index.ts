@@ -171,7 +171,8 @@ export const run = async (): Promise<void> => {
   }
 };
 
-run();
+// eslint-disable-next-line github/no-then
+run().then(() => core.info('Action finished successfully'));
 
 type InputData = {
   INPUT_AWS_ACCESS_KEY_ID: string;
