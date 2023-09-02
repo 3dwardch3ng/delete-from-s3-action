@@ -23,7 +23,7 @@
   },
   "scripts": {
     "bundle": "yarn format:write && yarn package",
-    "ci-test": "jest --forceExit --detectOpenHandles",
+    "ci-test": "jest --coverage --forceExit --detectOpenHandles",
     "format:write": "prettier --write '**/*.ts'",
     "format:check": "prettier --check '**/*.ts'",
     "lint": "npx eslint . -c ./.github/linters/.eslintrc.yml",
