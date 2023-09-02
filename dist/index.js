@@ -40423,16 +40423,18 @@ const init = () => {
                 },
             },
         ];
+        core.debug(`s3Options: ${JSON.stringify(s3Data.s3Options)}`);
         s3Data.s3Client = new S3.S3Client(s3Data.s3Options);
     }
     else {
         core.debug('Using AWS credentials from environment');
         s3Data.s3Options = [
             {
-                region: inputData.BUCKET,
+                region: inputData.BUCKET_REGION,
                 endpoint: `https://${inputData.BUCKET}.s3.${inputData.BUCKET_REGION}.amazonaws.com`,
             },
         ];
+        core.debug(`s3Options: ${JSON.stringify(s3Data.s3Options)}`);
         s3Data.s3Client = new S3.S3Client(s3Data.s3Options);
     }
     s3Data.deletedCommandInput = {
