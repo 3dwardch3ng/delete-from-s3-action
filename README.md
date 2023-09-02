@@ -2,6 +2,9 @@
 This is the Github Action that delete object/s from a S3 bucket
 
 ### Status
+![GitHub](https://img.shields.io/github/license/3dwardch3ng/delete-from-s3-action)
+![GitHub release (with filter)](https://img.shields.io/github/v/release/3dwardch3ng/delete-from-s3-action)
+![GitHub contributors](https://img.shields.io/github/contributors/3dwardch3ng/delete-from-s3-action)
 #### Release 
 ![CI](https://github.com/3dwardCh3nG/delete-from-s3-action/actions/workflows/ci.yml/badge.svg?branch=main)
 [![Qodana](https://github.com/3dwardCh3nG/delete-from-s3-action/actions/workflows/qodana_code_quality.yml/badge.svg?branch=main)](https://github.com/3dwardCh3nG/delete-from-s3-action/actions/workflows/qodana_code_quality.yml)
@@ -21,6 +24,7 @@ This is the Github Action that delete object/s from a S3 bucket
 [![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=3dwardCh3nG_delete-from-s3-action&metric=sqale_index)](https://sonarcloud.io/summary/new_code?id=3dwardCh3nG_delete-from-s3-action)
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=3dwardCh3nG_delete-from-s3-action&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=3dwardCh3nG_delete-from-s3-action)
 [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=3dwardCh3nG_delete-from-s3-action&metric=bugs)](https://sonarcloud.io/summary/new_code?id=3dwardCh3nG_delete-from-s3-action)
+
 ## Usage
 
 ### `workflow.yml` Example
