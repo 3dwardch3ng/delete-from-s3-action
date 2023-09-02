@@ -57,7 +57,7 @@ jobs:
           object_key_to_delete: 'object/path/1.txt'
           dry_run: true
       - name: Test Local Action
-        id: test-action-1
+        id: test-action-2
         uses: ./
         with:
           aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -69,7 +69,7 @@ jobs:
           is_prefix_match: true
           dry_run: true
       - name: Test Local Action
-        id: test-action-1
+        id: test-action-3
         uses: ./
         with:
           aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}

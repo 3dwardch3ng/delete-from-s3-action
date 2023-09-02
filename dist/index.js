@@ -40403,7 +40403,7 @@ const prepareInputValues = () => {
         core.getInput('is_prefix_match', { required: false }) || 'false';
     inputData.IS_SUFFIX_MATCH =
         core.getInput('is_suffix_match', { required: false }) || 'false';
-    inputData.OBJECT_NAME_TO_DELETE = core.getInput('object_name_to_delete', {
+    inputData.OBJECT_KEY_TO_DELETE = core.getInput('object_key_to_delete', {
         required: true,
     });
     inputData.DRY_RUN = core.getInput('dry_run', { required: false }) || 'false';
@@ -40447,7 +40447,7 @@ const listObjects = async (callback1, callback2) => {
         Bucket: inputData.BUCKET,
     };
     if (inputData.IS_PREFIX_MATCH === 'true') {
-        listRequest.Prefix = inputData.OBJECT_NAME_TO_DELETE;
+        listRequest.Prefix = inputData.OBJECT_KEY_TO_DELETE;
     }
     const listCommand = new S3.ListObjectsV2Command(listRequest);
     const response = await s3Data.s3Client.send(listCommand);
@@ -40473,16 +40473,16 @@ const objectKeyMatches = (objectKey) => {
     if (!objectKey)
         return false;
     if (inputData.IS_FULL_MATCH === 'true') {
-        return objectKey === inputData.OBJECT_NAME_TO_DELETE;
+        return objectKey === inputData.OBJECT_KEY_TO_DELETE;
     }
     else if (inputData.IS_ANY_MATCH === 'true') {
-        return objectKey.includes(inputData.OBJECT_NAME_TO_DELETE);
+        return objectKey.includes(inputData.OBJECT_KEY_TO_DELETE);
     }
     else if (inputData.IS_PREFIX_MATCH === 'true') {
-        return objectKey.startsWith(inputData.OBJECT_NAME_TO_DELETE);
+        return objectKey.startsWith(inputData.OBJECT_KEY_TO_DELETE);
     }
     else if (inputData.IS_SUFFIX_MATCH === 'true') {
-        return objectKey.endsWith(inputData.OBJECT_NAME_TO_DELETE);
+        return objectKey.endsWith(inputData.OBJECT_KEY_TO_DELETE);
     }
     return false;
 };
@@ -40500,20 +40500,25 @@ const processObjectToDelete = (objectKey) => {
 exports.processObjectToDelete = processObjectToDelete;
 const deleteObjects = async () => {
     await (0, exports.listObjects)(exports.processObjectsFunc, exports.processObjectToDelete);
-    if (s3Data.deletedCommandInput.Delete?.Objects?.length === 0) {
-        core.info('No objects to delete');
-        return [];
-    }
-    else {
-        const { Deleted } = await s3Data.s3Client.send(s3Data.deleteCommand);
-        if (Deleted && Deleted?.length > 0) {
-            core.info(`Successfully deleted ${Deleted?.length} objects from S3 bucket. Deleted objects:`);
-            core.info(Deleted?.map((d) => ` • ${d.Key}`).join('\n'));
-            return Deleted;
-        }
-        else {
+    if (inputData.DRY_RUN !== 'true') {
+        if (s3Data.deletedCommandInput.Delete?.Objects?.length === 0) {
+            core.info('No objects to delete');
             return [];
         }
+        else {
+            const { Deleted } = await s3Data.s3Client.send(s3Data.deleteCommand);
+            if (Deleted && Deleted?.length > 0) {
+                core.info(`Successfully deleted ${Deleted?.length} objects from S3 bucket. Deleted objects:`);
+                core.info(Deleted?.map((d) => ` • ${d.Key}`).join('\n'));
+                return Deleted;
+            }
+            else {
+                return [];
+            }
+        }
+    }
+    else {
+        return [];
     }
 };
 exports.deleteObjects = deleteObjects;
@@ -40529,7 +40534,8 @@ const run = async () => {
     }
 };
 exports.run = run;
-(0, exports.run)();
+// eslint-disable-next-line github/no-then
+(0, exports.run)().then(() => core.info('Action finished successfully'));
 
 
 /***/ }),

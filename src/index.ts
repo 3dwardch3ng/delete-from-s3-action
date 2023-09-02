@@ -145,19 +145,19 @@ export const deleteObjects = async (): Promise<S3.DeletedObject[]> => {
       core.info('No objects to delete');
       return [];
     } else {
-        const { Deleted } = await s3Data.s3Client.send(s3Data.deleteCommand);
+      const { Deleted } = await s3Data.s3Client.send(s3Data.deleteCommand);
 
-        if (Deleted && Deleted?.length > 0) {
-          core.info(
-            `Successfully deleted ${Deleted?.length} objects from S3 bucket. Deleted objects:`,
-          );
+      if (Deleted && Deleted?.length > 0) {
+        core.info(
+          `Successfully deleted ${Deleted?.length} objects from S3 bucket. Deleted objects:`,
+        );
 
-          core.info(Deleted?.map((d) => ` • ${d.Key}`).join('\n'));
+        core.info(Deleted?.map((d) => ` • ${d.Key}`).join('\n'));
 
-          return Deleted;
-        } else {
-          return [];
-        }
+        return Deleted;
+      } else {
+        return [];
+      }
     }
   } else {
     return [];
