@@ -40410,6 +40410,7 @@ const prepareInputValues = () => {
 };
 exports.prepareInputValues = prepareInputValues;
 const init = () => {
+    process.env.AWS_REGION = inputData.BUCKET_REGION;
     if (inputData.INPUT_AWS_ACCESS_KEY_ID !== '' &&
         inputData.INPUT_AWS_SECRET_ACCESS_KEY !== '') {
         core.debug('Using AWS credentials from input');
