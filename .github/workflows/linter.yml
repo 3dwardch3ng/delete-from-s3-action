@@ -5,8 +5,10 @@ on:
     branches:
       - develop
   push:
-    branches-ignore:
+    branches:
       - main
+      - next
+      - develop
 
 jobs:
   lint:
