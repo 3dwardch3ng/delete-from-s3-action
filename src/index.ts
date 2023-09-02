@@ -140,23 +140,27 @@ export const processObjectToDelete = (objectKey?: string): void => {
 export const deleteObjects = async (): Promise<S3.DeletedObject[]> => {
   await listObjects(processObjectsFunc, processObjectToDelete);
 
-  if (s3Data.deletedCommandInput.Delete?.Objects?.length === 0) {
-    core.info('No objects to delete');
-    return [];
-  } else {
-    const { Deleted } = await s3Data.s3Client.send(s3Data.deleteCommand);
-
-    if (Deleted && Deleted?.length > 0) {
-      core.info(
-        `Successfully deleted ${Deleted?.length} objects from S3 bucket. Deleted objects:`,
-      );
-
-      core.info(Deleted?.map((d) => ` • ${d.Key}`).join('\n'));
-
-      return Deleted;
-    } else {
+  if (inputData.DRY_RUN !== 'true') {
+    if (s3Data.deletedCommandInput.Delete?.Objects?.length === 0) {
+      core.info('No objects to delete');
       return [];
+    } else {
+        const { Deleted } = await s3Data.s3Client.send(s3Data.deleteCommand);
+
+        if (Deleted && Deleted?.length > 0) {
+          core.info(
+            `Successfully deleted ${Deleted?.length} objects from S3 bucket. Deleted objects:`,
+          );
+
+          core.info(Deleted?.map((d) => ` • ${d.Key}`).join('\n'));
+
+          return Deleted;
+        } else {
+          return [];
+        }
     }
+  } else {
+    return [];
   }
 };
 
