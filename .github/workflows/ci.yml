@@ -80,6 +80,17 @@ jobs:
           is_full_match: false
           is_suffix_match: true
           dry_run: true
+      - name: Test Local Action
+        id: test-action-3
+        uses: ./
+        with:
+          aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws_bucket_name: 'test-delete-from-s3-action'
+          aws_bucket_region: ap-southeast-2
+          object_key_to_delete: '10.txt'
+          is_full_match: false
+          is_suffix_match: true
   release:
     name: generate-version
     runs-on: ubuntu-latest

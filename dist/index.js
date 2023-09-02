@@ -40379,7 +40379,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.s3Data = exports.inputData = exports.run = exports.deleteObjects = exports.processObjectToDelete = exports.objectKeyMatches = exports.processObjectsFunc = exports.listObjects = exports.init = exports.prepareInputValues = void 0;
 const core = __importStar(__nccwpck_require__(42186));
-const S3 = __importStar(__nccwpck_require__(19250));
+const AWS = __importStar(__nccwpck_require__(19250));
 const inputData = {};
 exports.inputData = inputData;
 const s3Data = {};
@@ -40424,7 +40424,7 @@ const init = () => {
             },
         ];
         core.debug(`s3Options: ${JSON.stringify(s3Data.s3Options)}`);
-        s3Data.s3Client = new S3.S3Client(s3Data.s3Options);
+        s3Data.s3Client = new AWS.S3(s3Data.s3Options);
     }
     else {
         core.debug('Using AWS credentials from environment');
@@ -40435,13 +40435,13 @@ const init = () => {
             },
         ];
         core.debug(`s3Options: ${JSON.stringify(s3Data.s3Options)}`);
-        s3Data.s3Client = new S3.S3Client(s3Data.s3Options);
+        s3Data.s3Client = new AWS.S3(s3Data.s3Options);
     }
     s3Data.deletedCommandInput = {
-        Bucket: core.getInput('aws_bucket_name'),
+        Bucket: inputData.BUCKET,
         Delete: { Objects: [] },
     };
-    s3Data.deleteCommand = new S3.DeleteObjectsCommand(s3Data.deletedCommandInput);
+    s3Data.deleteCommand = new AWS.DeleteObjectsCommand(s3Data.deletedCommandInput);
 };
 exports.init = init;
 const listObjects = async (callback1, callback2) => {
@@ -40451,7 +40451,7 @@ const listObjects = async (callback1, callback2) => {
     if (inputData.IS_PREFIX_MATCH === 'true') {
         listRequest.Prefix = inputData.OBJECT_KEY_TO_DELETE;
     }
-    const listCommand = new S3.ListObjectsV2Command(listRequest);
+    const listCommand = new AWS.ListObjectsV2Command(listRequest);
     const response = await s3Data.s3Client.send(listCommand);
     if (!response.Contents || response.Contents?.length === 0)
         return;
