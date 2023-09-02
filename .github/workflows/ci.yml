@@ -125,4 +125,4 @@ jobs:
         env:
           GH_TOKEN: ${{secrets.PIPELINE_GITHUB_TOKEN}}
         shell: bash
-        run: bash ./scripts/generate-version.sh ${{ steps.branch-name.outputs.current_branch }}
+        run: npx semantic-release
