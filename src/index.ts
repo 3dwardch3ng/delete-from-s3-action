@@ -171,9 +171,7 @@ export const run = async (): Promise<void> => {
   }
 };
 
-run().then(
-  () => core.info('Action finished successfully'),
-);
+run().then(() => core.info('Action finished successfully'));
 
 type InputData = {
   INPUT_AWS_ACCESS_KEY_ID: string;
