@@ -1,10 +1,9 @@
-name: Release pipeline
+name: Continuous Integration
 
 on:
+  push:
   pull_request:
     types: [ opened, synchronize, reopened ]
-    branches:
-      - main
 permissions:
   id-token: write
   contents: write
@@ -13,7 +12,6 @@ jobs:
   test-typescript:
     name: TypeScript Tests
     runs-on: ubuntu-latest
-    environment: release
     steps:
       - name: Checkout
         id: checkout
@@ -44,8 +42,11 @@ jobs:
   release:
     name: generate-version
     runs-on: ubuntu-latest
-    environment: release
-    needs: [ code-analysis, test-typescript ]
+    needs: test-typescript
+    if: |
+      github.ref == 'refs/heads/main' ||
+      github.ref == 'refs/heads/next' ||
+      github.ref == 'refs/heads/develop'
     steps:
       - name: Get branch name
         id: branch-name
@@ -56,18 +57,11 @@ jobs:
         with:
           node-version: 20
       - name: Set up environment
-        if: |
-          github.ref == 'refs/heads/develop' ||
-          github.ref == 'refs/heads/next' ||
-          github.ref == 'refs/heads/main'
         env:
           GH_TOKEN: ${{secrets.PIPELINE_GITHUB_TOKEN}}
         run: |
           yarn install
       - name: Generate App Version
-        if: |
-          github.ref == 'refs/heads/next' ||
-          github.ref == 'refs/heads/main'
         env:
           GH_TOKEN: ${{secrets.PIPELINE_GITHUB_TOKEN}}
         shell: bash
