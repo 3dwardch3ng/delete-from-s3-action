@@ -38,7 +38,7 @@ describe('Test index.ts', () => {
       expect(index.inputData.IS_ANY_MATCH).toEqual('false');
       expect(index.inputData.IS_PREFIX_MATCH).toEqual('false');
       expect(index.inputData.IS_SUFFIX_MATCH).toEqual('false');
-      expect(index.inputData.OBJECT_NAME_TO_DELETE).toEqual('s3/object/key/1');
+      expect(index.inputData.OBJECT_KEY_TO_DELETE).toEqual('s3/object/key/1');
       expect(index.inputData.DRY_RUN).toEqual('false');
     });
 
@@ -55,13 +55,13 @@ describe('Test index.ts', () => {
       expect(index.inputData.IS_ANY_MATCH).toEqual('false');
       expect(index.inputData.IS_PREFIX_MATCH).toEqual('false');
       expect(index.inputData.IS_SUFFIX_MATCH).toEqual('false');
-      expect(index.inputData.OBJECT_NAME_TO_DELETE).toEqual('s3/object/key/1');
+      expect(index.inputData.OBJECT_KEY_TO_DELETE).toEqual('s3/object/key/1');
       expect(index.inputData.DRY_RUN).toEqual('false');
     });
 
     it('should throw error', () => {
       process.env['INPUT_AWS_BUCKET_REGION'] = 'ap-southeast-2';
-      process.env['INPUT_OBJECT_NAME_TO_DELETE'] = 's3/object/key/1';
+      process.env['INPUT_OBJECT_KEY_TO_DELETE'] = 's3/object/key/1';
 
       expect(() => index.prepareInputValues()).toThrow();
     });
@@ -173,7 +173,7 @@ describe('Test index.ts', () => {
       process.env['INPUT_IS_ANY_MATCH'] = 'false';
       process.env['INPUT_IS_PREFIX_MATCH'] = 'true';
       process.env['INPUT_IS_SUFFIX_MATCH'] = 'false';
-      process.env['INPUT_OBJECT_NAME_TO_DELETE'] = 's3/object/';
+      process.env['INPUT_OBJECT_KEY_TO_DELETE'] = 's3/object/';
       index.prepareInputValues();
       index.init();
 
@@ -310,7 +310,7 @@ describe('Test index.ts', () => {
       process.env['INPUT_IS_ANY_MATCH'] = 'false';
       process.env['INPUT_IS_PREFIX_MATCH'] = 'false';
       process.env['INPUT_IS_SUFFIX_MATCH'] = 'false';
-      process.env['INPUT_OBJECT_NAME_TO_DELETE'] = 's3/object/key/1';
+      process.env['INPUT_OBJECT_KEY_TO_DELETE'] = 's3/object/key/1';
       index.prepareInputValues();
       index.init();
 
@@ -327,7 +327,7 @@ describe('Test index.ts', () => {
       process.env['INPUT_IS_ANY_MATCH'] = 'false';
       process.env['INPUT_IS_PREFIX_MATCH'] = 'false';
       process.env['INPUT_IS_SUFFIX_MATCH'] = 'false';
-      process.env['INPUT_OBJECT_NAME_TO_DELETE'] = 's3/object/key/2';
+      process.env['INPUT_OBJECT_KEY_TO_DELETE'] = 's3/object/key/2';
       index.prepareInputValues();
       index.init();
 
@@ -344,7 +344,7 @@ describe('Test index.ts', () => {
       process.env['INPUT_IS_ANY_MATCH'] = 'true';
       process.env['INPUT_IS_PREFIX_MATCH'] = 'false';
       process.env['INPUT_IS_SUFFIX_MATCH'] = 'false';
-      process.env['INPUT_OBJECT_NAME_TO_DELETE'] = 'object/key';
+      process.env['INPUT_OBJECT_KEY_TO_DELETE'] = 'object/key';
       index.prepareInputValues();
       index.init();
 
@@ -361,7 +361,7 @@ describe('Test index.ts', () => {
       process.env['INPUT_IS_ANY_MATCH'] = 'true';
       process.env['INPUT_IS_PREFIX_MATCH'] = 'false';
       process.env['INPUT_IS_SUFFIX_MATCH'] = 'false';
-      process.env['INPUT_OBJECT_NAME_TO_DELETE'] = 'key/3';
+      process.env['INPUT_OBJECT_KEY_TO_DELETE'] = 'key/3';
       index.prepareInputValues();
       index.init();
 
@@ -378,7 +378,7 @@ describe('Test index.ts', () => {
       process.env['INPUT_IS_ANY_MATCH'] = 'false';
       process.env['INPUT_IS_PREFIX_MATCH'] = 'true';
       process.env['INPUT_IS_SUFFIX_MATCH'] = 'false';
-      process.env['INPUT_OBJECT_NAME_TO_DELETE'] = 's3/object/';
+      process.env['INPUT_OBJECT_KEY_TO_DELETE'] = 's3/object/';
       index.prepareInputValues();
       index.init();
 
@@ -395,7 +395,7 @@ describe('Test index.ts', () => {
       process.env['INPUT_IS_ANY_MATCH'] = 'false';
       process.env['INPUT_IS_PREFIX_MATCH'] = 'true';
       process.env['INPUT_IS_SUFFIX_MATCH'] = 'false';
-      process.env['INPUT_OBJECT_NAME_TO_DELETE'] = 'object/key';
+      process.env['INPUT_OBJECT_KEY_TO_DELETE'] = 'object/key';
       index.prepareInputValues();
       index.init();
 
@@ -412,7 +412,7 @@ describe('Test index.ts', () => {
       process.env['INPUT_IS_ANY_MATCH'] = 'false';
       process.env['INPUT_IS_PREFIX_MATCH'] = 'false';
       process.env['INPUT_IS_SUFFIX_MATCH'] = 'true';
-      process.env['INPUT_OBJECT_NAME_TO_DELETE'] = 'key/1';
+      process.env['INPUT_OBJECT_KEY_TO_DELETE'] = 'key/1';
       index.prepareInputValues();
       index.init();
 
@@ -429,7 +429,7 @@ describe('Test index.ts', () => {
       process.env['INPUT_IS_ANY_MATCH'] = 'false';
       process.env['INPUT_IS_PREFIX_MATCH'] = 'false';
       process.env['INPUT_IS_SUFFIX_MATCH'] = 'true';
-      process.env['INPUT_OBJECT_NAME_TO_DELETE'] = 's3/object/key/1';
+      process.env['INPUT_OBJECT_KEY_TO_DELETE'] = 's3/object/key/1';
       index.prepareInputValues();
       index.init();
 
@@ -446,7 +446,7 @@ describe('Test index.ts', () => {
       process.env['INPUT_IS_ANY_MATCH'] = 'false';
       process.env['INPUT_IS_PREFIX_MATCH'] = 'false';
       process.env['INPUT_IS_SUFFIX_MATCH'] = 'true';
-      process.env['INPUT_OBJECT_NAME_TO_DELETE'] = '/key/2';
+      process.env['INPUT_OBJECT_KEY_TO_DELETE'] = '/key/2';
       index.prepareInputValues();
       index.init();
 
@@ -463,7 +463,7 @@ describe('Test index.ts', () => {
       process.env['INPUT_IS_ANY_MATCH'] = 'false';
       process.env['INPUT_IS_PREFIX_MATCH'] = 'false';
       process.env['INPUT_IS_SUFFIX_MATCH'] = 'false';
-      process.env['INPUT_OBJECT_NAME_TO_DELETE'] = '/key/2';
+      process.env['INPUT_OBJECT_KEY_TO_DELETE'] = '/key/2';
       index.prepareInputValues();
       index.init();
 
@@ -684,7 +684,7 @@ describe('Test index.ts', () => {
 
     it('should call core.setFailed once', async () => {
       process.env['INPUT_AWS_BUCKET_REGION'] = 'ap-southeast-2';
-      process.env['INPUT_OBJECT_NAME_TO_DELETE'] = 's3/object/key/1';
+      process.env['INPUT_OBJECT_KEY_TO_DELETE'] = 's3/object/key/1';
 
       await index.run();
 
@@ -701,13 +701,13 @@ describe('Test index.ts', () => {
     process.env['INPUT_IS_ANY_MATCH'] = 'false';
     process.env['INPUT_IS_PREFIX_MATCH'] = 'false';
     process.env['INPUT_IS_SUFFIX_MATCH'] = 'false';
-    process.env['INPUT_OBJECT_NAME_TO_DELETE'] = 's3/object/key/1';
+    process.env['INPUT_OBJECT_KEY_TO_DELETE'] = 's3/object/key/1';
     process.env['INPUT_DRY_RUN'] = 'false';
   }
 
   function prepareMinimumProcessEnvs(): void {
     process.env['INPUT_AWS_BUCKET_NAME'] = 'dummy_bucket';
     process.env['INPUT_AWS_BUCKET_REGION'] = 'ap-southeast-2';
-    process.env['INPUT_OBJECT_NAME_TO_DELETE'] = 's3/object/key/1';
+    process.env['INPUT_OBJECT_KEY_TO_DELETE'] = 's3/object/key/1';
   }
 });
