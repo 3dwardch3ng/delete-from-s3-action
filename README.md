@@ -3,15 +3,15 @@ This is the Github Action that delete object/s from a S3 bucket
 
 ### Status
 #### Release 
-![CI](https://github.com/3dwardCh3nG/delete-from-s3-action/actions/workflows/release.yml/badge.svg?branch=main)
+![CI](https://github.com/3dwardCh3nG/delete-from-s3-action/actions/workflows/ci.yml/badge.svg?branch=main)
 [![Qodana](https://github.com/3dwardCh3nG/delete-from-s3-action/actions/workflows/qodana_code_quality.yml/badge.svg?branch=main)](https://github.com/3dwardCh3nG/delete-from-s3-action/actions/workflows/qodana_code_quality.yml)
 [![GitHub Super-Linter](https://github.com/3dwardCh3nG/delete-from-s3-action/actions/workflows/linter.yml/badge.svg?branch=main)](https://github.com/super-linter/super-linter)
 #### Next 
-![CI](https://github.com/3dwardCh3nG/delete-from-s3-action/actions/workflows/pre-release.yml/badge.svg?branch=next)
+![CI](https://github.com/3dwardCh3nG/delete-from-s3-action/actions/workflows/ci.yml/badge.svg?branch=next)
 [![Qodana](https://github.com/3dwardCh3nG/delete-from-s3-action/actions/workflows/qodana_code_quality.yml/badge.svg?branch=next)](https://github.com/3dwardCh3nG/delete-from-s3-action/actions/workflows/qodana_code_quality.yml)
 [![GitHub Super-Linter](https://github.com/3dwardCh3nG/delete-from-s3-action/actions/workflows/linter.yml/badge.svg?branch=next)](https://github.com/super-linter/super-linter)
 #### Develop 
-![CI](https://github.com/3dwardCh3nG/delete-from-s3-action/actions/workflows/develop.yml/badge.svg?branch=develop)
+![CI](https://github.com/3dwardCh3nG/delete-from-s3-action/actions/workflows/ci.yml/badge.svg?branch=develop)
 [![Qodana](https://github.com/3dwardCh3nG/delete-from-s3-action/actions/workflows/qodana_code_quality.yml/badge.svg?branch=develop)](https://github.com/3dwardCh3nG/delete-from-s3-action/actions/workflows/qodana_code_quality.yml)
 [![GitHub Super-Linter](https://github.com/3dwardCh3nG/delete-from-s3-action/actions/workflows/linter.yml/badge.svg?branch=develop)](https://github.com/super-linter/super-linter)
 [![Dependency Review](https://github.com/3dwardCh3nG/delete-from-s3-action/actions/workflows/dependency-review.yml/badge.svg)](https://github.com/3dwardCh3nG/delete-from-s3-action/actions/workflows/dependency-review.yml)
