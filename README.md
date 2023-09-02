@@ -6,14 +6,17 @@ This is the Github Action that delete object/s from a S3 bucket
 ![GitHub release (with filter)](https://img.shields.io/github/v/release/3dwardch3ng/delete-from-s3-action)
 ![GitHub contributors](https://img.shields.io/github/contributors/3dwardch3ng/delete-from-s3-action)
 #### Release 
+![GitHub release (with filter)](https://img.shields.io/github/v/release/3dwardch3ng/delete-from-s3-action)
 ![CI](https://github.com/3dwardCh3nG/delete-from-s3-action/actions/workflows/ci.yml/badge.svg?branch=main)
 [![Qodana](https://github.com/3dwardCh3nG/delete-from-s3-action/actions/workflows/qodana_code_quality.yml/badge.svg?branch=main)](https://github.com/3dwardCh3nG/delete-from-s3-action/actions/workflows/qodana_code_quality.yml)
 [![GitHub Super-Linter](https://github.com/3dwardCh3nG/delete-from-s3-action/actions/workflows/linter.yml/badge.svg?branch=main)](https://github.com/super-linter/super-linter)
 #### Next 
+![GitHub release (with filter)](https://img.shields.io/github/v/release/3dwardch3ng/delete-from-s3-action?filter=*-next*)
 ![CI](https://github.com/3dwardCh3nG/delete-from-s3-action/actions/workflows/ci.yml/badge.svg?branch=next)
 [![Qodana](https://github.com/3dwardCh3nG/delete-from-s3-action/actions/workflows/qodana_code_quality.yml/badge.svg?branch=next)](https://github.com/3dwardCh3nG/delete-from-s3-action/actions/workflows/qodana_code_quality.yml)
 [![GitHub Super-Linter](https://github.com/3dwardCh3nG/delete-from-s3-action/actions/workflows/linter.yml/badge.svg?branch=next)](https://github.com/super-linter/super-linter)
 #### Develop 
+![GitHub release (with filter)](https://img.shields.io/github/v/release/3dwardch3ng/delete-from-s3-action?filter=*-develop*)
 ![CI](https://github.com/3dwardCh3nG/delete-from-s3-action/actions/workflows/ci.yml/badge.svg?branch=develop)
 [![Qodana](https://github.com/3dwardCh3nG/delete-from-s3-action/actions/workflows/qodana_code_quality.yml/badge.svg?branch=develop)](https://github.com/3dwardCh3nG/delete-from-s3-action/actions/workflows/qodana_code_quality.yml)
 [![GitHub Super-Linter](https://github.com/3dwardCh3nG/delete-from-s3-action/actions/workflows/linter.yml/badge.svg?branch=develop)](https://github.com/super-linter/super-linter)
