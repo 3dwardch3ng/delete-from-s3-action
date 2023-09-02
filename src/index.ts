@@ -56,7 +56,7 @@ export const init = (): void => {
     core.debug('Using AWS credentials from environment');
     s3Data.s3Options = [
       {
-        region: inputData.BUCKET,
+        region: inputData.BUCKET_REGION,
         endpoint: `https://${inputData.BUCKET}.s3.${inputData.BUCKET_REGION}.amazonaws.com`,
       },
     ];
