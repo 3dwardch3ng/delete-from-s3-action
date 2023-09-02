@@ -40379,7 +40379,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.s3Data = exports.inputData = exports.run = exports.deleteObjects = exports.processObjectToDelete = exports.objectKeyMatches = exports.processObjectsFunc = exports.listObjects = exports.init = exports.prepareInputValues = void 0;
 const core = __importStar(__nccwpck_require__(42186));
-const S3 = __importStar(__nccwpck_require__(19250));
+const AWS = __importStar(__nccwpck_require__(19250));
 const inputData = {};
 exports.inputData = inputData;
 const s3Data = {};
@@ -40403,16 +40403,19 @@ const prepareInputValues = () => {
         core.getInput('is_prefix_match', { required: false }) || 'false';
     inputData.IS_SUFFIX_MATCH =
         core.getInput('is_suffix_match', { required: false }) || 'false';
-    inputData.OBJECT_NAME_TO_DELETE = core.getInput('object_name_to_delete', {
+    inputData.OBJECT_KEY_TO_DELETE = core.getInput('object_key_to_delete', {
         required: true,
     });
     inputData.DRY_RUN = core.getInput('dry_run', { required: false }) || 'false';
 };
 exports.prepareInputValues = prepareInputValues;
 const init = () => {
+    process.env.AWS_REGION = inputData.BUCKET_REGION;
     if (inputData.INPUT_AWS_ACCESS_KEY_ID !== '' &&
         inputData.INPUT_AWS_SECRET_ACCESS_KEY !== '') {
         core.debug('Using AWS credentials from input');
+        process.env.AWS_ACCESS_KEY_ID = inputData.INPUT_AWS_ACCESS_KEY_ID;
+        process.env.AWS_SECRET_ACCESS_KEY = inputData.INPUT_AWS_SECRET_ACCESS_KEY;
         s3Data.s3Options = [
             {
                 region: inputData.BUCKET_REGION,
@@ -40423,23 +40426,25 @@ const init = () => {
                 },
             },
         ];
-        s3Data.s3Client = new S3.S3Client(s3Data.s3Options);
+        core.debug(`s3Options: ${JSON.stringify(s3Data.s3Options)}`);
+        s3Data.s3Client = new AWS.S3(s3Data.s3Options);
     }
     else {
         core.debug('Using AWS credentials from environment');
         s3Data.s3Options = [
             {
-                region: inputData.BUCKET,
+                region: inputData.BUCKET_REGION,
                 endpoint: `https://${inputData.BUCKET}.s3.${inputData.BUCKET_REGION}.amazonaws.com`,
             },
         ];
-        s3Data.s3Client = new S3.S3Client(s3Data.s3Options);
+        core.debug(`s3Options: ${JSON.stringify(s3Data.s3Options)}`);
+        s3Data.s3Client = new AWS.S3(s3Data.s3Options);
     }
     s3Data.deletedCommandInput = {
-        Bucket: core.getInput('aws_bucket_name'),
+        Bucket: inputData.BUCKET,
         Delete: { Objects: [] },
     };
-    s3Data.deleteCommand = new S3.DeleteObjectsCommand(s3Data.deletedCommandInput);
+    s3Data.deleteCommand = new AWS.DeleteObjectsCommand(s3Data.deletedCommandInput);
 };
 exports.init = init;
 const listObjects = async (callback1, callback2) => {
@@ -40447,9 +40452,9 @@ const listObjects = async (callback1, callback2) => {
         Bucket: inputData.BUCKET,
     };
     if (inputData.IS_PREFIX_MATCH === 'true') {
-        listRequest.Prefix = inputData.OBJECT_NAME_TO_DELETE;
+        listRequest.Prefix = inputData.OBJECT_KEY_TO_DELETE;
     }
-    const listCommand = new S3.ListObjectsV2Command(listRequest);
+    const listCommand = new AWS.ListObjectsV2Command(listRequest);
     const response = await s3Data.s3Client.send(listCommand);
     if (!response.Contents || response.Contents?.length === 0)
         return;
@@ -40473,16 +40478,16 @@ const objectKeyMatches = (objectKey) => {
     if (!objectKey)
         return false;
     if (inputData.IS_FULL_MATCH === 'true') {
-        return objectKey === inputData.OBJECT_NAME_TO_DELETE;
+        return objectKey === inputData.OBJECT_KEY_TO_DELETE;
     }
     else if (inputData.IS_ANY_MATCH === 'true') {
-        return objectKey.includes(inputData.OBJECT_NAME_TO_DELETE);
+        return objectKey.includes(inputData.OBJECT_KEY_TO_DELETE);
     }
     else if (inputData.IS_PREFIX_MATCH === 'true') {
-        return objectKey.startsWith(inputData.OBJECT_NAME_TO_DELETE);
+        return objectKey.startsWith(inputData.OBJECT_KEY_TO_DELETE);
     }
     else if (inputData.IS_SUFFIX_MATCH === 'true') {
-        return objectKey.endsWith(inputData.OBJECT_NAME_TO_DELETE);
+        return objectKey.endsWith(inputData.OBJECT_KEY_TO_DELETE);
     }
     return false;
 };
@@ -40500,20 +40505,25 @@ const processObjectToDelete = (objectKey) => {
 exports.processObjectToDelete = processObjectToDelete;
 const deleteObjects = async () => {
     await (0, exports.listObjects)(exports.processObjectsFunc, exports.processObjectToDelete);
-    if (s3Data.deletedCommandInput.Delete?.Objects?.length === 0) {
-        core.info('No objects to delete');
-        return [];
-    }
-    else {
-        const { Deleted } = await s3Data.s3Client.send(s3Data.deleteCommand);
-        if (Deleted && Deleted?.length > 0) {
-            core.info(`Successfully deleted ${Deleted?.length} objects from S3 bucket. Deleted objects:`);
-            core.info(Deleted?.map((d) => ` • ${d.Key}`).join('\n'));
-            return Deleted;
-        }
-        else {
+    if (inputData.DRY_RUN !== 'true') {
+        if (s3Data.deletedCommandInput.Delete?.Objects?.length === 0) {
+            core.info('No objects to delete');
             return [];
         }
+        else {
+            const { Deleted } = await s3Data.s3Client.send(s3Data.deleteCommand);
+            if (Deleted && Deleted?.length > 0) {
+                core.info(`Successfully deleted ${Deleted?.length} objects from S3 bucket. Deleted objects:`);
+                core.info(Deleted?.map((d) => ` • ${d.Key}`).join('\n'));
+                return Deleted;
+            }
+            else {
+                return [];
+            }
+        }
+    }
+    else {
+        return [];
     }
 };
 exports.deleteObjects = deleteObjects;
@@ -40529,7 +40539,8 @@ const run = async () => {
     }
 };
 exports.run = run;
-(0, exports.run)();
+// eslint-disable-next-line github/no-then
+(0, exports.run)().then(() => core.info('Action finished successfully'));
 
 
 /***/ }),

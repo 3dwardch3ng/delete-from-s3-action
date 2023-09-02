@@ -526,9 +526,6 @@ describe('Test index.ts', () => {
       jest.clearAllMocks();
       jest.resetModules();
       process.env = { ...OLD_ENV };
-      prepareFullProcessEnvs();
-      index.prepareInputValues();
-      index.init();
     });
 
     afterAll(() => {
@@ -536,6 +533,10 @@ describe('Test index.ts', () => {
     });
 
     it('should call core.info function once when bucket is empty', async () => {
+      prepareFullProcessEnvs();
+      index.prepareInputValues();
+      index.init();
+
       const listResponse: S3.ListObjectsV2Output = {
         IsTruncated: false,
         Contents: [],
@@ -553,6 +554,10 @@ describe('Test index.ts', () => {
     });
 
     it('should call core.info function 2 time when 2 Objects matched', async () => {
+      prepareFullProcessEnvs();
+      index.prepareInputValues();
+      index.init();
+
       const listResponse: S3.ListObjectsV2Output = {
         IsTruncated: false,
         Contents: [
@@ -593,6 +598,10 @@ describe('Test index.ts', () => {
     });
 
     it('should return empty array when no file has been deleted', async () => {
+      prepareFullProcessEnvs();
+      index.prepareInputValues();
+      index.init();
+
       const listResponse: S3.ListObjectsV2Output = {
         IsTruncated: false,
         Contents: [
@@ -626,6 +635,10 @@ describe('Test index.ts', () => {
     });
 
     it('should return empty array when no file has been deleted - Deleted is undefined', async () => {
+      prepareFullProcessEnvs();
+      index.prepareInputValues();
+      index.init();
+
       const listResponse: S3.ListObjectsV2Output = {
         IsTruncated: false,
         Contents: [
@@ -653,6 +666,42 @@ describe('Test index.ts', () => {
       const result: S3.DeletedObject[] = await index.deleteObjects();
 
       expect(s3ClientSendMock).toHaveBeenCalledTimes(2);
+      expect(result.length).toEqual(0);
+    });
+
+    it('should return empty array when in dry run mode', async () => {
+      prepareMinimumProcessEnvs();
+      process.env['INPUT_DRY_RUN'] = 'true';
+      index.prepareInputValues();
+      index.init();
+
+      const listResponse: S3.ListObjectsV2Output = {
+        IsTruncated: false,
+        Contents: [
+          {
+            Key: 's3/object/key/1',
+          },
+          {
+            Key: 's3/object/key/2',
+          },
+        ],
+      };
+      const deleteResponse: S3.DeleteObjectsOutput = {};
+
+      const s3ClientSendMock = jest
+        .spyOn(index.s3Data.s3Client, 'send')
+        .mockImplementation(async (command) => {
+          if (command instanceof S3.ListObjectsV2Command) {
+            return Promise.resolve(listResponse);
+          } else if (command instanceof S3.DeleteObjectsCommand) {
+            return Promise.resolve(deleteResponse);
+          }
+          return Promise.resolve();
+        });
+
+      const result: S3.DeletedObject[] = await index.deleteObjects();
+
+      expect(s3ClientSendMock).toHaveBeenCalledTimes(1);
       expect(result.length).toEqual(0);
     });
   });

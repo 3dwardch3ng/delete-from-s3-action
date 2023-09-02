@@ -1,5 +1,5 @@
 import * as core from '@actions/core';
-import * as S3 from '@aws-sdk/client-s3';
+import * as AWS from '@aws-sdk/client-s3';
 import { ListObjectsV2Request } from '@aws-sdk/client-s3/dist-types/models/models_0';
 import { DeleteObjectsCommandInput } from '@aws-sdk/client-s3/dist-types/commands/DeleteObjectsCommand';
 import * as types from '@smithy/types';
@@ -36,11 +36,14 @@ export const prepareInputValues = (): void => {
 };
 
 export const init = (): void => {
+  process.env.AWS_REGION = inputData.BUCKET_REGION;
   if (
     inputData.INPUT_AWS_ACCESS_KEY_ID !== '' &&
     inputData.INPUT_AWS_SECRET_ACCESS_KEY !== ''
   ) {
     core.debug('Using AWS credentials from input');
+    process.env.AWS_ACCESS_KEY_ID = inputData.INPUT_AWS_ACCESS_KEY_ID;
+    process.env.AWS_SECRET_ACCESS_KEY = inputData.INPUT_AWS_SECRET_ACCESS_KEY;
     s3Data.s3Options = [
       {
         region: inputData.BUCKET_REGION,
@@ -51,28 +54,30 @@ export const init = (): void => {
         },
       },
     ];
-    s3Data.s3Client = new S3.S3Client(s3Data.s3Options);
+    core.debug(`s3Options: ${JSON.stringify(s3Data.s3Options)}`);
+    s3Data.s3Client = new AWS.S3(s3Data.s3Options);
   } else {
     core.debug('Using AWS credentials from environment');
     s3Data.s3Options = [
       {
-        region: inputData.BUCKET,
+        region: inputData.BUCKET_REGION,
         endpoint: `https://${inputData.BUCKET}.s3.${inputData.BUCKET_REGION}.amazonaws.com`,
       },
     ];
-    s3Data.s3Client = new S3.S3Client(s3Data.s3Options);
+    core.debug(`s3Options: ${JSON.stringify(s3Data.s3Options)}`);
+    s3Data.s3Client = new AWS.S3(s3Data.s3Options);
   }
   s3Data.deletedCommandInput = {
-    Bucket: core.getInput('aws_bucket_name'),
+    Bucket: inputData.BUCKET,
     Delete: { Objects: [] },
   };
-  s3Data.deleteCommand = new S3.DeleteObjectsCommand(
+  s3Data.deleteCommand = new AWS.DeleteObjectsCommand(
     s3Data.deletedCommandInput,
   );
 };
 
 export const listObjects = async (
-  callback1: (objects: S3._Object[], callback: (key?: string) => void) => void,
+  callback1: (objects: AWS._Object[], callback: (key?: string) => void) => void,
   callback2: (key?: string) => void,
 ): Promise<void> => {
   const listRequest: ListObjectsV2Request = {
@@ -83,11 +88,11 @@ export const listObjects = async (
     listRequest.Prefix = inputData.OBJECT_KEY_TO_DELETE;
   }
 
-  const listCommand: S3.ListObjectsV2Command = new S3.ListObjectsV2Command(
+  const listCommand: AWS.ListObjectsV2Command = new AWS.ListObjectsV2Command(
     listRequest,
   );
 
-  const response: S3.ListObjectsV2Output =
+  const response: AWS.ListObjectsV2Output =
     await s3Data.s3Client.send(listCommand);
 
   if (!response.Contents || response.Contents?.length === 0) return;
@@ -102,7 +107,7 @@ export const listObjects = async (
 };
 
 export const processObjectsFunc = (
-  objects: S3._Object[],
+  objects: AWS._Object[],
   callback: (objectKey?: string) => void,
 ): void => {
   for (const object of objects) {
@@ -137,26 +142,30 @@ export const processObjectToDelete = (objectKey?: string): void => {
   }
 };
 
-export const deleteObjects = async (): Promise<S3.DeletedObject[]> => {
+export const deleteObjects = async (): Promise<AWS.DeletedObject[]> => {
   await listObjects(processObjectsFunc, processObjectToDelete);
 
-  if (s3Data.deletedCommandInput.Delete?.Objects?.length === 0) {
-    core.info('No objects to delete');
-    return [];
-  } else {
-    const { Deleted } = await s3Data.s3Client.send(s3Data.deleteCommand);
-
-    if (Deleted && Deleted?.length > 0) {
-      core.info(
-        `Successfully deleted ${Deleted?.length} objects from S3 bucket. Deleted objects:`,
-      );
-
-      core.info(Deleted?.map((d) => ` • ${d.Key}`).join('\n'));
-
-      return Deleted;
-    } else {
+  if (inputData.DRY_RUN !== 'true') {
+    if (s3Data.deletedCommandInput.Delete?.Objects?.length === 0) {
+      core.info('No objects to delete');
       return [];
+    } else {
+      const { Deleted } = await s3Data.s3Client.send(s3Data.deleteCommand);
+
+      if (Deleted && Deleted?.length > 0) {
+        core.info(
+          `Successfully deleted ${Deleted?.length} objects from S3 bucket. Deleted objects:`,
+        );
+
+        core.info(Deleted?.map((d) => ` • ${d.Key}`).join('\n'));
+
+        return Deleted;
+      } else {
+        return [];
+      }
     }
+  } else {
+    return [];
   }
 };
 
@@ -164,7 +173,7 @@ export const run = async (): Promise<void> => {
   try {
     prepareInputValues();
     init();
-    const result: S3.DeletedObject[] = await deleteObjects();
+    const result: AWS.DeletedObject[] = await deleteObjects();
     core.setOutput('deleted_objects', result);
   } catch (error) {
     core.setFailed(`Action failed with error ${error}`);
@@ -188,10 +197,10 @@ type InputData = {
 };
 
 type S3Data = {
-  s3Options: types.CheckOptionalClientConfig<S3.S3ClientConfig>;
-  s3Client: S3.S3Client;
+  s3Options: types.CheckOptionalClientConfig<AWS.S3ClientConfig>;
+  s3Client: AWS.S3;
   deletedCommandInput: DeleteObjectsCommandInput;
-  deleteCommand: S3.DeleteObjectsCommand;
+  deleteCommand: AWS.DeleteObjectsCommand;
 };
 
 export { inputData, s3Data };
