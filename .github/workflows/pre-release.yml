@@ -1,4 +1,4 @@
-name: Upload to S3 Action pipeline
+name: Pre-Release pipeline
 
 on:
   pull_request:
