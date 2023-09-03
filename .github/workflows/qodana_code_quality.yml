@@ -6,9 +6,11 @@ on:
     branches:
       - develop
       - next
+      - main
   push:
     branches:
       - next
+      - main
 
 jobs:
   qodana:
