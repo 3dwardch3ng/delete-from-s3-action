@@ -12,11 +12,18 @@ jobs:
   sync-tag:
     runs-on: ubuntu-latest
     steps:
+      - name: GitHub Bot App Token
+        id: personal-github-bot
+        uses: getsentry/action-github-app-token@v2
+        with:
+          app_id: ${{ secrets.PERSONAL_GITHUB_BOT_APP_ID }}
+          private_key: ${{ secrets.PERSONAL_GITHUB_BOT_APP_PRIVATE_KEY }}
       - name: 'Checkout Repository'
         uses: actions/checkout@v3.6.0
         with:
           ref: main
           fetch-depth: 0
+          token: ${{ steps.personal-github-bot.outputs.token }}
       - name: 'Setup Git'
         run: |
           git config --global user.name "github-actions[bot]"
@@ -27,11 +34,19 @@ jobs:
         shell: bash
         run: |
           git switch next
-          git merge main
-          git push origin next
+          git fetch origin main:main
+          git reset --hard main
+      - name: Merge Main to Next via PR
+        uses: peter-evans/create-pull-request@v5
+        with:
+          branch: 'merge-main-to-next'
       - name: 'Merge Next to Develop'
         shell: bash
         run: |
           git switch develop
-          git merge origin/next
-          git push origin develop
+          git fetch origin next:next
+          git reset --hard next
+      - name: Merge Next to Develop via PR
+        uses: peter-evans/create-pull-request@v5
+        with:
+          branch: 'merge-next-to-develop'
