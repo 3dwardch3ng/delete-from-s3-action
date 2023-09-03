@@ -22,16 +22,16 @@ jobs:
       - name: 'Merge Main to Next'
         shell: bash
         run: |
-          git checkout main
+          git checkout origin/main
           git pull origin main --allow-unrelated-histories
-          git checkout next
+          git checkout origin/next
           git pull origin next 
           git merge main
           git push origin next --follow-tags
       - name: 'Merge Next to Develop'
         shell: bash
         run: |
-          git checkout develop
+          git checkout origin/develop
           git pull origin develop --allow-unrelated-histories
-          git merge next
+          git merge origin/next
           git push origin develop --follow-tags
