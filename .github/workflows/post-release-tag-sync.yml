@@ -12,18 +12,11 @@ jobs:
   sync-tag:
     runs-on: ubuntu-latest
     steps:
-      - name: GitHub Bot App Token
-        id: personal-github-bot
-        uses: getsentry/action-github-app-token@v2
-        with:
-          app_id: ${{ secrets.PERSONAL_GITHUB_BOT_APP_ID }}
-          private_key: ${{ secrets.PERSONAL_GITHUB_BOT_APP_PRIVATE_KEY }}
       - name: 'Checkout Repository'
         uses: actions/checkout@v3.6.0
         with:
           ref: main
           fetch-depth: 0
-          token: ${{ steps.personal-github-bot.outputs.token }}
       - name: 'Setup Git'
         run: |
           git config --global user.name "github-actions[bot]"
