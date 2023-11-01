@@ -19,6 +19,9 @@
     "./dist",
     "./node_modules",
     "./__tests__",
-    "./coverage"
+    "./coverage",
+    "./scripts",
+    "./badges",
+    "./.github"
   ]
 }
