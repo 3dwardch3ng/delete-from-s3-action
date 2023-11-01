@@ -140,19 +140,19 @@ jobs:
           if [[ "$BRANCH_NAME" == "develop" ]]
           then
             echo "Create extra develop tag"
-            git tag -a -f "develop-latest" -m "latest develop"
+            git tag -a -f "develop-latest" -m "latest develop [skip ci]"
             git push --force --tags
           fi
           if [[ "$BRANCH_NAME" == "next" ]]
           then
             echo "Create extra next tag"
-            git tag -a -f "next-latest" -m "latest next"
+            git tag -a -f "next-latest" -m "latest next [skip ci]"
             git push --force --tags
           fi
           if [[ "$BRANCH_NAME" == "main" ]]
           then
             echo "Create extra release tags"
-            git tag -a -f "latest" -m "latest"
+            git tag -a -f "latest" -m "latest [skip ci]"
             git tag -a -f "v1" -m "v1"
             git push --force --tags
           fi
