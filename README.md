@@ -47,7 +47,7 @@ jobs:
   runs-on: ubuntu-latest
   steps:
     - uses: actions/checkout@master
-    - uses: 3dwardCh3nG/delete-from-s3-action@v1.0.0
+    - uses: 3dwardCh3nG/delete-from-s3-action@v1
       with:
         aws_access_key_id: ${{ secrets.AWS_KEY_ID }}
         aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY}}

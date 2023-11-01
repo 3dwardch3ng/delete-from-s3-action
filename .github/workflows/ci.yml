@@ -126,3 +126,33 @@ jobs:
           GH_TOKEN: ${{secrets.PIPELINE_GITHUB_TOKEN}}
         shell: bash
         run: bash ./scripts/generate-version.sh ${{ steps.branch-name.outputs.current_branch }}
+      - name: Update Release Tag
+        env:
+          GH_TOKEN: ${{secrets.PIPELINE_GITHUB_TOKEN}}
+          BRANCH_NAME: ${{ steps.branch-name.outputs.current_branch }}
+        run: |
+          echo "Setting git config"
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global core.autocrlf input
+          git config --global push.followTags true
+          git remote set-url origin https://3dwardch3ng:"$GH_TOKEN"@github.com/3dwardch3ng/delete-from-s3-action.git
+          if [[ "$BRANCH_NAME" == "develop" ]]
+          then
+            echo "Create extra develop tag"
+            git tag -a -f "develop-latest" -m "latest develop"
+            git push --force --tags
+          fi
+          if [[ "$BRANCH_NAME" == "next" ]]
+          then
+            echo "Create extra next tag"
+            git tag -a -f "next-latest" -m "latest next"
+            git push --force --tags
+          fi
+          if [[ "$BRANCH_NAME" == "main" ]]
+          then
+            echo "Create extra release tags"
+            git tag -a -f "latest" -m "latest"
+            git tag -a -f "v1" -m "v1"
+            git push --force --tags
+          fi
