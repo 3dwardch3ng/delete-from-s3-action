@@ -550,7 +550,7 @@ describe('Test index.ts', () => {
 
       expect(s3ClientSendMock).toHaveBeenCalledTimes(1);
       expect(infoMock).toHaveBeenCalledTimes(1);
-      expect(infoMock).toHaveBeenCalledWith('No objects to delete');
+      expect(infoMock).toHaveBeenCalledWith('No object to delete');
     });
 
     it('should call core.info function 2 time when 2 Objects matched', async () => {
