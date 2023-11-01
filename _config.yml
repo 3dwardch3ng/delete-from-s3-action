@@ -1,2 +1,2 @@
-#theme: Slate
-remote_theme: pages-themes/slate@v0.2.0
+#theme: minimal
+remote_theme: pages-themes/minimal@v0.2.0
