@@ -147,7 +147,7 @@ export const deleteObjects = async (): Promise<AWS.DeletedObject[]> => {
 
   if (inputData.DRY_RUN !== 'true') {
     if (s3Data.deletedCommandInput.Delete?.Objects?.length === 0) {
-      core.info('No objects to delete');
+      core.info('No object to delete');
       return [];
     } else {
       const { Deleted } = await s3Data.s3Client.send(s3Data.deleteCommand);

@@ -45200,7 +45200,7 @@ const deleteObjects = async () => {
     await (0, exports.listObjects)(exports.processObjectsFunc, exports.processObjectToDelete);
     if (inputData.DRY_RUN !== 'true') {
         if (s3Data.deletedCommandInput.Delete?.Objects?.length === 0) {
-            core.info('No objects to delete');
+            core.info('No object to delete');
             return [];
         }
         else {
