@@ -1,0 +1,45 @@
+name: 'Post Release Tag Sync'
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+  id-token: write
+
+jobs:
+  sync-tag:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Checkout Repository'
+        uses: actions/checkout@v3.6.0
+        with:
+          ref: main
+          fetch-depth: 0
+      - name: 'Setup Git'
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global core.autocrlf input
+          git config --global push.followTags true
+      - name: 'Merge Main to Next'
+        shell: bash
+        run: |
+          git switch next
+          git fetch origin main:main
+          git reset --hard main
+      - name: Merge Main to Next via PR
+        uses: peter-evans/create-pull-request@v5
+        with:
+          branch: 'merge-main-to-next'
+      - name: 'Merge Next to Develop'
+        shell: bash
+        run: |
+          git switch develop
+          git fetch origin next:next
+          git reset --hard next
+      - name: Merge Next to Develop via PR
+        uses: peter-evans/create-pull-request@v5
+        with:
+          branch: 'merge-next-to-develop'
