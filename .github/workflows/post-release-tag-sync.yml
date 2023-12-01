@@ -23,23 +23,16 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git config --global core.autocrlf input
           git config --global push.followTags true
-      - name: 'Merge Main to Next'
-        shell: bash
-        run: |
-          git switch next
-          git fetch origin main:main
-          git reset --hard main
-      - name: Merge Main to Next via PR
-        uses: peter-evans/create-pull-request@v5
+      - name: Merge main to develop via PR
+        uses: 3dwardch3ng/github-pull-request@latest
         with:
-          branch: 'merge-main-to-next'
-      - name: 'Merge Next to Develop'
-        shell: bash
-        run: |
-          git switch develop
-          git fetch origin next:next
-          git reset --hard next
-      - name: Merge Next to Develop via PR
-        uses: peter-evans/create-pull-request@v5
-        with:
-          branch: 'merge-next-to-develop'
+          github_token: ${{ secrets.PIPELINE_GITHUB_TOKEN }}
+          repo_owner: 3dwardch3ng
+          repo_name: 'github-pull-request'
+          source_branch: 'main'
+          target_branch: 'develop'
+          pr_title: 'merge from main to develop'
+          require_middle_branch: true
+          auto_merge: true
+          max_merge_retries: 10
+          merge_retry_interval: 120
