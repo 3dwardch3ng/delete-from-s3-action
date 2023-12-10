@@ -2049,7 +2049,7 @@
     "@smithy/util-stream" "^2.0.23"
     tslib "^2.5.0"
 
-"@smithy/types@^2.4.0", "@smithy/types@^2.5.0", "@smithy/types@^2.6.0", "@smithy/types@^2.7.0":
+"@smithy/types@^2.5.0", "@smithy/types@^2.6.0", "@smithy/types@^2.7.0":
   version "2.7.0"
   resolved "https://registry.yarnpkg.com/@smithy/types/-/types-2.7.0.tgz#6ed9ba5bff7c4d28c980cff967e6d8456840a4f3"
   integrity sha512-1OIFyhK+vOkMbu4aN2HZz/MomREkrAC/HqY5mlJMUJfGrPRwijJDTeiN8Rnj9zUaB8ogXAfIOtZrrgqZ4w7Wnw==
