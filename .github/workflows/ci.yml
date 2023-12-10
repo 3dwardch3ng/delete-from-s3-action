@@ -11,8 +11,8 @@ permissions:
 jobs:
   test-typescript:
     if: |
-      github.ref == 'refs/heads/develop' ||
-      startWith(github.ref,'refs/heads/dependabot/') == true
+      github.ref != 'refs/heads/main' &&
+      github.ref != 'refs/heads/next'
     name: TypeScript Tests
     runs-on: ubuntu-latest
     steps:
@@ -46,7 +46,8 @@ jobs:
     name: GitHub Actions Test
     runs-on: ubuntu-latest
     if: |
-      github.ref == 'refs/heads/develop'
+      github.ref != 'refs/heads/main' &&
+      github.ref != 'refs/heads/next'
     steps:
       - name: Checkout
         id: checkout
