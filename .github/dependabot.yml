@@ -13,5 +13,5 @@ updates:
       - "3dwardCh3nG"
     labels:
       - "dependencies"
-    milestone: 5
+    milestone: 4
     target-branch: "upgrade-dependencies"
