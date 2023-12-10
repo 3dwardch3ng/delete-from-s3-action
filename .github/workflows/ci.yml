@@ -112,7 +112,7 @@ jobs:
     steps:
       - name: Get branch name
         id: branch-name
-        uses: tj-actions/branch-names@v7.0.5
+        uses: tj-actions/branch-names@v7.0.7
       - name: checkout
         uses: actions/checkout@v3.6.0
         with:
