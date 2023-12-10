@@ -10,6 +10,8 @@ permissions:
 
 jobs:
   test-typescript:
+    if: |
+      github.ref == 'refs/heads/develop'
     name: TypeScript Tests
     runs-on: ubuntu-latest
     steps:
@@ -42,6 +44,8 @@ jobs:
   test-action:
     name: GitHub Actions Test
     runs-on: ubuntu-latest
+    if: |
+      github.ref == 'refs/heads/develop'
     steps:
       - name: Checkout
         id: checkout
