@@ -137,7 +137,7 @@
             },
             {
               "tag": "Upgrade",
-              "release": "minor"
+              "release": "patch"
             },
             {
               "tag": "Chore",
