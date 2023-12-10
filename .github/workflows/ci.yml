@@ -11,7 +11,8 @@ permissions:
 jobs:
   test-typescript:
     if: |
-      github.ref == 'refs/heads/develop'
+      github.ref == 'refs/heads/develop' ||
+      startWith(github.ref,'refs/heads/dependabot/') == true
     name: TypeScript Tests
     runs-on: ubuntu-latest
     steps:
