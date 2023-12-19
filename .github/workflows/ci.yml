@@ -95,8 +95,8 @@ jobs:
           object_key_to_delete: '10.txt'
           is_full_match: false
           is_suffix_match: true
-  release:
-    name: generate-version
+  build-develop:
+    name: build-develop
     runs-on: ubuntu-latest
     needs: [ test-typescript, test-action ]
     permissions:
@@ -105,8 +105,6 @@ jobs:
       pull-requests: write
       id-token: write
     if: |
-      github.ref == 'refs/heads/main' ||
-      github.ref == 'refs/heads/next' ||
       github.ref == 'refs/heads/develop'
     steps:
       - name: Get branch name
@@ -147,6 +145,50 @@ jobs:
             git tag -a -f "develop-latest" -m "latest develop [skip ci]"
             git push --force --tags
           fi
+  release:
+    name: release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+      id-token: write
+    if: |
+      github.ref == 'refs/heads/main' ||
+      github.ref == 'refs/heads/next'
+    steps:
+      - name: Get branch name
+        id: branch-name
+        uses: tj-actions/branch-names@v7.0.7
+      - name: checkout
+        uses: actions/checkout@v3.6.0
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "lts/*"
+      - name: Set up environment
+        env:
+          GH_TOKEN: ${{secrets.PIPELINE_GITHUB_TOKEN}}
+        run: |
+          yarn install
+      - name: Generate App Version
+        env:
+          GH_TOKEN: ${{secrets.PIPELINE_GITHUB_TOKEN}}
+        shell: bash
+        run: bash ./scripts/generate-version.sh ${{ steps.branch-name.outputs.current_branch }}
+      - name: Update Release Tag
+        env:
+          GH_TOKEN: ${{secrets.PIPELINE_GITHUB_TOKEN}}
+          BRANCH_NAME: ${{ steps.branch-name.outputs.current_branch }}
+        run: |
+          echo "Setting git config"
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global core.autocrlf input
+          git config --global push.followTags true
+          git remote set-url origin https://3dwardch3ng:"$GH_TOKEN"@github.com/3dwardch3ng/delete-from-s3-action.git
           if [[ "$BRANCH_NAME" == "next" ]]
           then
             echo "Create extra next tag"
