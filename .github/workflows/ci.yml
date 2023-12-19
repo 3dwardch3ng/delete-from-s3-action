@@ -10,6 +10,9 @@ permissions:
 
 jobs:
   test-typescript:
+    if: |
+      github.ref != 'refs/heads/main' &&
+      github.ref != 'refs/heads/next'
     name: TypeScript Tests
     runs-on: ubuntu-latest
     steps:
@@ -42,6 +45,9 @@ jobs:
   test-action:
     name: GitHub Actions Test
     runs-on: ubuntu-latest
+    if: |
+      github.ref != 'refs/heads/main' &&
+      github.ref != 'refs/heads/next'
     steps:
       - name: Checkout
         id: checkout
@@ -107,7 +113,7 @@ jobs:
     steps:
       - name: Get branch name
         id: branch-name
-        uses: tj-actions/branch-names@v7.0.5
+        uses: tj-actions/branch-names@v7.0.7
       - name: checkout
         uses: actions/checkout@v3.6.0
         with:
