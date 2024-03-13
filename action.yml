@@ -45,5 +45,5 @@ outputs:
   deleted_objects:
     description: 'The deleted objects'
 runs:
-  using: 'node16'
+  using: 'node20'
   main: 'dist/index.js'
