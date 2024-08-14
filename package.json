@@ -67,7 +67,7 @@
   },
   "devDependencies": {
     "@smithy/smithy-client": "^2.1.18",
-    "@smithy/types": "^2.7.0",
+    "@smithy/types": "^3.0.0",
     "@types/jest": "^29.5.11",
     "@types/node": "^20.10.6",
     "@typescript-eslint/eslint-plugin": "^6.15.0",
