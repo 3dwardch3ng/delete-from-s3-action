@@ -37,11 +37,6 @@ jobs:
       - name: Test
         id: yarn-ci-test
         run: yarn ci-test
-      - name: Analyze with SonarCloud
-        uses: sonarsource/sonarcloud-github-action@v2.0.0
-        env:
-          GITHUB_TOKEN: ${{ secrets.PIPELINE_GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
   test-action:
     name: GitHub Actions Test
     runs-on: ubuntu-latest
