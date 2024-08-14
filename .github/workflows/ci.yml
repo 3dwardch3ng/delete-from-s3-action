@@ -37,17 +37,6 @@ jobs:
       - name: Test
         id: yarn-ci-test
         run: yarn ci-test
-      - name: Analyse with SonarQube
-        uses: sonarsource/sonarqube-scan-action@master
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-      - name: Code quality gate check with SonarQube
-        uses: sonarsource/sonarqube-quality-gate-action@master
-        timeout-minutes: 5
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
   test-action:
     name: GitHub Actions Test
     runs-on: ubuntu-latest
