@@ -108,7 +108,7 @@ jobs:
         id: branch-name
         uses: tj-actions/branch-names@v7.0.7
       - name: checkout
-        uses: actions/checkout@v4.1.7
+        uses: actions/checkout@v4.2.2
         with:
           fetch-depth: 0
           persist-credentials: false
@@ -158,7 +158,7 @@ jobs:
         id: branch-name
         uses: tj-actions/branch-names@v7.0.7
       - name: checkout
-        uses: actions/checkout@v4.1.7
+        uses: actions/checkout@v4.2.2
         with:
           fetch-depth: 0
           persist-credentials: false
